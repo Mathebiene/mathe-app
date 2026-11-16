@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Funktionen lernen</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F7FB;--card:#fff;--ink:#1E2A3B;--mute:#6B7A90;--line:#DDE4EE;--main:#1CB0A8;--mainD:#12857E;--gold:#FFC53D;--goldD:#D99A00;--bad:#E5484D;--badD:#B8282D;--okBg:#D9F5EE;--badBg:#FDE3E4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121A26;--card:#1B2635;--ink:#E8EEF7;--mute:#92A2B8;--line:#2C3A4D;--okBg:#12372F;--badBg:#42191C;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",system-ui,sans-serif;font-weight:600}
+#app{max-width:480px;margin:0 auto;padding:16px;min-height:100vh}
+h1{font-size:24px;font-weight:900;margin:4px 0 12px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.chip{flex:none;padding:8px 14px;border-radius:99px;border:2px solid var(--line);background:var(--card);font:inherit;font-weight:800;color:var(--mute)}
+.chip.on{border-color:var(--main);color:var(--main)}
+.chip:disabled{opacity:.55}
+.path{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 0}
+.node{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;font:inherit;color:var(--ink)}
+.dot{width:72px;height:72px;border-radius:50%;background:var(--main);color:#fff;font-size:26px;font-weight:900;border:0;box-shadow:0 6px 0 var(--mainD);display:grid;place-items:center}
+.node:active .dot{transform:translateY(4px);box-shadow:0 2px 0 var(--mainD)}
+.node.lock .dot{background:var(--line);box-shadow:0 6px 0 var(--mute);color:var(--mute)}
+.node.lock{pointer-events:none}
+.name{font-weight:800;font-size:14px;max-width:170px;text-align:center}
+.stars{font-size:18px;letter-spacing:2px}
+.s0{color:var(--line)}.s1{color:var(--gold)}
+.btn{display:block;width:100%;padding:14px;border-radius:16px;border:0;background:var(--main);color:#fff;font:inherit;font-weight:900;font-size:17px;box-shadow:0 5px 0 var(--mainD)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--mainD)}
+.btn:disabled{background:var(--line);color:var(--mute);box-shadow:0 5px 0 var(--mute)}
+.btn.bad{background:var(--bad);box-shadow:0 5px 0 var(--badD)}
+.bar{height:14px;border-radius:99px;background:var(--line);overflow:hidden;flex:1}
+.bar i{display:block;height:100%;background:var(--main);transition:width .3s}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.x{background:none;border:0;font-size:24px;color:var(--mute)}
+.q{font-size:20px;font-weight:800;margin:12px 0 16px;line-height:1.35}
+.opt{display:block;width:100%;text-align:left;padding:14px;margin:0 0 10px;border-radius:14px;border:2px solid var(--line);border-bottom-width:5px;background:var(--card);font:inherit;font-weight:800;color:var(--ink);font-size:17px}
+.opt.sel{border-color:var(--main);background:var(--okBg)}
+.num{width:100%;padding:14px;font:inherit;font-size:20px;font-weight:800;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+svg.g{width:100%;background:var(--card);border-radius:16px;border:2px solid var(--line)}
+.fb{position:sticky;bottom:0;margin:20px -16px 0;padding:16px;border-radius:20px 20px 0 0}
+.fb.ok{background:var(--okBg)}.fb.no{background:var(--badBg)}
+.fb b{display:block;font-size:18px;margin-bottom:10px}
+.res{text-align:center;padding-top:40px}
+.res .stars{font-size:44px}
+.big{font-size:48px;font-weight:900;color:var(--main)}
+.sub{color:var(--mute);margin:6px 0 24px}
+.pdf{text-align:center;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px;margin-top:8px}
+.pdf .name{max-width:none;margin-bottom:12px;font-size:17px}
+.pdf .sub{margin:12px 0 0}
+.info{background:var(--card);border:2px solid var(--line);border-left:6px solid var(--main);border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:16px;line-height:1.45}
+.gap{display:inline-block;min-width:80px;border-bottom:3px solid var(--mute);margin:0 4px}
+.gf{font-weight:800;background:var(--okBg);border-radius:8px;padding:1px 6px}
+.gap.act{border-bottom-color:var(--main);background:var(--okBg);border-radius:6px 6px 0 0}
+.gf.no{background:var(--badBg)}
+.hi{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 4px}
+.hi h1{margin:0}
+.lnk{background:none;border:0;font:inherit;font-weight:800;font-size:14px;color:var(--mute);text-decoration:underline;padding:6px}
+.hallo{color:var(--mute);margin:0 0 12px}
+.err{color:var(--bad);font-weight:800;margin:10px 0 14px;min-height:1.4em}
+.login{padding-top:40px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ===== EINSTELLUNGEN: Mindestquoten für Stern 1, 2, 3 ===== */
+const QUOTEN=[0.6,0.8,0.9];
+
+/* ===== PDF-Übersicht: Dateiname (Datei liegt im selben Ordner wie diese HTML-Datei) ===== */
+const UEBERSICHT="uebersicht-lineare-funktionen.pdf";
+
+/* ===== SUPABASE: hier deine zwei Werte eintragen ===== */
+/* Nur den öffentlichen Schlüssel (publishable bzw. anon) verwenden, NIEMALS den secret- oder service_role-Schlüssel! */
+const SB_URL="https://panxxujdbazonxachqkq.supabase.co";
+const SB_KEY="sb_publishable_gRhF8IAFkgla-t7Q_i3ArQ_XlNz98wJ";
+
+/* ===== INHALTE: hier Lektionen anpassen ===== */
+/* Hilfsfunktionen zum Erzeugen zufälliger Aufgaben */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[ri(0,a.length-1)];
+const mischen=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=ri(0,k);[a[k],a[j]]=[a[j],a[k]]}return a};
+const fz=n=>String(Math.round(n*100)/100).replace(".",",").replace("-","−");
+const nz=(a,b)=>{let v=0;while(!v)v=ri(a,b);return v};
+const term=(m,b)=>"f(x) = "+(m===1?"x":m===-1?"−x":fz(m)+"x")+(b>0?" + "+fz(b):b<0?" − "+fz(-b):"");
+const mc=(f,r,w,g)=>{const o=[r,...w].filter((v,k,a)=>a.indexOf(v)===k).slice(0,4);const m=mischen(o);return{t:"mc",f,o:m,a:m.indexOf(r),g}};
+const num=(f,a,g)=>({t:"num",f,a:Math.round(a*100)/100,g});
+const paar=()=>{let m,b;do{m=nz(-5,5);b=nz(-8,8)}while(Math.abs(m)===Math.abs(b)||Math.abs(m)===1);return[m,b]};
+const nl=()=>pick(["f(x) = x² + "+ri(1,5),"f(x) = "+ri(2,4)+"ˣ","f(x) = "+ri(2,6)+"/x","f(x) = "+ri(1,3)+"x² − "+ri(1,4)]);
+
+/* Jede Lektion hat eine Funktion gen(), die bei jedem Durchlauf neue Fragen erzeugt */
+const G=(r,w)=>({r,w});
+/* Ein Satz aus Textstücken und Lücken G(richtig, [falsche]); wird in Schritte zerlegt */
+function satz(...p){
+ const gaps=p.filter(x=>typeof x!=="string").length;
+ if(!gaps)return[{pre:p.join(""),n:1}];
+ const out=[];let pre="",seen=0;
+ for(const x of p){
+  if(typeof x==="string"){if(seen===gaps)out[out.length-1].post=(out[out.length-1].post||"")+x;else pre+=x}
+  else{seen++;const o=mischen([...new Set([x.r,...x.w])]);out.push({pre,g:x,o,a:o.indexOf(x.r)});pre=""}
+ }
+ out[0].n=1;return out;
+}
+/* Zahleneingabe: akzeptiert ganze Zahlen, Dezimalzahlen (Komma oder Punkt) und Brüche wie −6/3 */
+function zahl(s){
+ s=String(s).replace(/\s/g,"").replace(/−/g,"-").replace(/,/g,".");
+ const m=s.match(/^(-?\d+(?:\.\d+)?)(?:\/(-?\d+(?:\.\d+)?))?$/);
+ if(!m)return NaN;
+ return m[2]===undefined?+m[1]:+m[1]/+m[2];
+}
+const LEKTIONEN=[
+{id:"l0",titel:"Grundlagen",erkl:true,gen:()=>{
+ const [m1,n1]=paar();
+ const m2=nz(1,4)*pick([-1,1]),r2=nz(-4,4),n2=-m2*r2,t2=term(m2,n2);
+ return[
+  ...satz("Die allgemeine Form der linearen Funktion ist ",G("f(x) = m·x + n",["f(x) = m·x² + n","f(x) = m/x + n"]),"."),
+  ...satz("Dabei ist m die ",G("Steigung",["Nullstelle"])," und n bezeichnet den ",G("y-Achsenabschnitt",["Funktionswert"]),"."),
+  ...satz("Die Steigung m sagt, wie steil die Gerade ist: Bei m > 0 steigt sie, bei m < 0 fällt sie."),
+  ...satz("Beispiel: Bei der Funktion ",term(m1,n1)," ist m = ",G(fz(m1),[fz(n1),fz(-m1)])," und n = ",G(fz(n1),[fz(m1),fz(-n1)]),"."),
+  ...satz("Für zwei Punkte A(x₁ | y₁) und B(x₂ | y₂) berechnet man die Steigung mit der Formel m = ",G("(y₂ − y₁) / (x₂ − x₁)",["(x₂ − x₁) / (y₂ − y₁)","(y₂ + y₁) / (x₂ + x₁)"]),". Dazu braucht man immer zwei Punkte der Geraden."),
+  ...satz("Der y-Achsenabschnitt n gibt an, in welchem Punkt die Gerade die ",G("y-Achse",["x-Achse"])," schneidet, nämlich im Punkt (0 | n)."),
+  ...satz("Die Nullstelle ist die Stelle, an der die Gerade die x-Achse schneidet. Man berechnet sie, indem man ",G("f(x) = 0",["x = 0"])," setzt. Danach formt man nach x um."),
+  ...satz(`Beispiel: Aus ${t2} wird 0 = ${t2.slice(7)} und damit x = `,G(fz(r2),[fz(-r2),fz(n2)]),"."),
+  ...satz("Damit kennst du die wichtigsten Begriffe. Jetzt kannst du sie in den nächsten Lektionen anwenden.")]}},
+{id:"l1",titel:"Was ist eine lineare Funktion?",gen:()=>{
+ const m=()=>nz(-4,4),b=()=>nz(-6,6);
+ const m2=m(),b2=b(),x1=ri(2,6),m3=m(),b3=b(),x2=ri(2,5);
+ return[
+  mc("Welche Gleichung beschreibt eine lineare Funktion?",term(m(),b()),[nl(),nl(),nl()]),
+  num(`Gegeben: ${term(m2,b2)}. Berechne f(${x1}).`,m2*x1+b2),
+  num(`Gegeben: ${term(m3,b3)}. Berechne f(−${x2}).`,-m3*x2+b3),
+  mc("Welche Gleichung beschreibt KEINE lineare Funktion?",nl(),[term(m(),b()),term(m(),b()),term(m(),b())])]}},
+{id:"l2",titel:"Steigung und y-Achsenabschnitt",gen:()=>{
+ const [m1,b1]=paar(),[m2,b2]=paar(),m3=nz(-3,3),b3=ri(-4,4),x1=ri(-2,1),x2=x1+ri(2,3),m4=nz(-5,5);
+ return[
+  mc(`Wie groß ist die Steigung m bei ${term(m1,b1)}?`,fz(m1),[fz(b1),fz(-m1),fz(-b1)]),
+  mc(`Wo schneidet ${term(m2,b2)} die y-Achse?`,"bei y = "+fz(b2),["bei y = "+fz(m2),"bei y = "+fz(-b2),"bei y = "+fz(-m2)]),
+  num(`Eine Gerade geht durch die Punkte A(${fz(x1)} | ${fz(m3*x1+b3)}) und B(${fz(x2)} | ${fz(m3*x2+b3)}). Wie groß ist die Steigung m?`,m3),
+  mc(`Was gilt für den Graphen von ${term(m4,nz(-6,6))}?`,m4>0?"Er steigt":"Er fällt",[m4>0?"Er fällt":"Er steigt","Er ist waagerecht","Er ist senkrecht"])]}},
+{id:"l3",titel:"Graphen ablesen",gen:()=>{
+ const gp=()=>{const sx=pick([1,2]),sy=pick([1,2]);let m;do{m=pick([-4,-2,-1,-.5,.5,1,2,4])}while(![.5,1,2].includes(Math.abs(m*sx/sy)));return[m,sy*nz(-3,3),sx,sy]};
+ const g1=gp(),g2=gp(),g3=gp(),r=nz(-4,4),m4=nz(-4,4);
+ let x0,y;do{x0=g3[2]*nz(-4,4);y=g3[0]*x0+g3[1]}while(!Number.isInteger(y)||Math.abs(y)>5*g3[3]);
+ return[
+  mc("Welche Gleichung gehört zum Graphen?",term(g1[0],g1[1]),[term(-g1[0],g1[1]),term(g1[0],-g1[1]),term(-g1[0],-g1[1])],g1),
+  Math.random()<.5
+   ?mc("Wie groß ist die Steigung m des Graphen?",fz(g2[0]),[fz(-g2[0]),fz(g2[1]),fz(g2[0]+1)],g2)
+   :mc("Wo schneidet der Graph die y-Achse?","bei y = "+fz(g2[1]),["bei y = "+fz(-g2[1]),"bei y = "+fz(g2[0]),"bei y = "+fz(g2[1]+g2[3])],g2),
+  num(`Welchen y-Wert hat der Graph bei x = ${fz(x0)}?`,y,g3),
+  num(`Berechne die Nullstelle von ${term(m4,-m4*r)}.`,r)]}}
+];
+/* ===== ENDE INHALTE ===== */
+
+const app=document.getElementById("app");
+let fort={},konto=null;
+try{fort=JSON.parse(localStorage.getItem("fort")||"{}")}catch(e){}
+try{konto=JSON.parse(localStorage.getItem("konto")||"null")}catch(e){}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ===== Verbindung zu Supabase: nur Funktionsaufrufe, kein direkter Tabellenzugriff ===== */
+async function rpc(name,args){
+ const h={"Content-Type":"application/json",apikey:SB_KEY};
+ if(SB_KEY.startsWith("eyJ"))h.Authorization="Bearer "+SB_KEY;
+ const r=await fetch(SB_URL+"/rest/v1/rpc/"+name,{method:"POST",headers:h,body:JSON.stringify(args)});
+ if(!r.ok)throw new Error("HTTP "+r.status);
+ return r.json();
+}
+const speichernLokal=()=>{try{localStorage.setItem("fort",JSON.stringify(fort))}catch(e){}};
+const kontoMerken=()=>{try{localStorage.setItem("konto",JSON.stringify(konto))}catch(e){}};
+const speichern=()=>{speichernLokal();if(konto)rpc("schueler_speichern",{p_code:konto.code,p_fortschritt:fort}).catch(()=>{})};
+/* Pro Lektion jeweils den besseren Stand behalten (lokal vs. Server) */
+function zusammen(a,b){
+ const o={};
+ for(const k of new Set([...Object.keys(a||{}),...Object.keys(b||{})])){
+  const x=(a||{})[k]||{},y=(b||{})[k]||{};
+  o[k]={laeufe:Math.max(x.laeufe||0,y.laeufe||0),sterne:Math.max(x.sterne||0,y.sterne||0)};
+ }
+ return o;
+}
+const st=id=>fort[id]||{laeufe:0,sterne:0};
+const sternHtml=n=>[0,1,2].map(i=>`<span class="${i<n?"s1":"s0"}">★</span>`).join("");
+let L,K,i,richtig,gewaehlt,geprueft;
+
+function home(){
+ const frei=k=>k===0||st(LEKTIONEN[k-1].id).laeufe>0;
+ const alle=LEKTIONEN.every(l=>st(l.id).laeufe>0);
+ app.innerHTML=`<div class="hi"><h1>Funktionen</h1>${konto?`<button class="lnk" id="aus">Abmelden</button>`:""}</div>
+ ${konto&&konto.nickname?`<div class="hallo">Hallo, ${esc(konto.nickname)}!</div>`:""}
+ <div class="chips"><button class="chip on">Linear</button>
+ ${["Quadratisch","Exponentiell","Sinus","Kosinus"].map(n=>`<button class="chip" disabled>${n}</button>`).join("")}</div>
+ <div class="path">${LEKTIONEN.map((l,k)=>{const s=st(l.id);
+  return `<button class="node ${frei(k)?"":"lock"}" data-k="${k}" style="transform:translateX(${[0,40,-40][k%3]}px)">
+  <span class="dot">${frei(k)?(s.laeufe?"✓":k+1):"🔒"}</span><span class="name">${l.titel}</span>
+  <span class="stars">${sternHtml(s.sterne)}</span></button>`}).join("")}</div>${alle?`<div class="pdf"><div class="name">Thema geschafft! 🎉</div><button class="btn" id="pdf">Übersicht als PDF herunterladen</button><div class="sub" id="pdfmsg"></div></div>`:""}`;
+ app.querySelectorAll(".node").forEach(b=>b.onclick=()=>start(+b.dataset.k));
+ const p=document.getElementById("pdf");if(p)p.onclick=pdfLaden;
+ const aus=document.getElementById("aus");if(aus)aus.onclick=abmelden;
+}
+
+/* ===== Anmeldung: Code eingeben, Spitzname wählen, abmelden ===== */
+function loginMaske(fehler){
+ app.innerHTML=`<div class="login"><h1>Funktionen lernen</h1>
+ <div class="info">Gib den Code ein, den du von deiner Lehrkraft bekommen hast.</div>
+ <input class="num" id="code" placeholder="Code, z. B. A3F9-27BC" autocomplete="off" autocapitalize="characters" spellcheck="false">
+ <p class="err" id="err">${fehler||""}</p>
+ <button class="btn" id="go" disabled>Weiter</button></div>`;
+ const c=document.getElementById("code"),b=document.getElementById("go");
+ c.oninput=()=>{b.disabled=c.value.replace(/[\s-]/g,"").length<4};
+ const los=async()=>{
+  b.disabled=true;b.textContent="Prüfe …";
+  const code=c.value.replace(/[\s-]/g,"").toUpperCase();
+  try{
+   const d=await rpc("schueler_login",{p_code:code});
+   if(!d.ok){loginMaske("Diesen Code kenne ich nicht. Prüfe ihn noch einmal.");return}
+   konto={code,nickname:d.nickname};
+   fort=zusammen(fort,d.fortschritt);speichernLokal();kontoMerken();
+   if(konto.nickname){speichern();home()}else nickMaske();
+  }catch(e){loginMaske("Keine Verbindung. Versuche es gleich noch einmal oder sag deiner Lehrkraft Bescheid.")}
+ };
+ b.onclick=los;
+ c.onkeydown=e=>{if(e.key==="Enter"&&!b.disabled)los()};
+}
+function nickMaske(fehler){
+ app.innerHTML=`<div class="login"><h1>Willkommen!</h1>
+ <div class="info">Wähle einen Spitznamen, mit dem du angesprochen wirst. Bitte nimm nicht deinen echten Namen.</div>
+ <input class="num" id="nick" maxlength="20" placeholder="Dein Spitzname" autocomplete="off">
+ <p class="err" id="err">${fehler||""}</p>
+ <button class="btn" id="go" disabled>Los geht’s</button></div>`;
+ const n=document.getElementById("nick"),b=document.getElementById("go");
+ n.oninput=()=>{b.disabled=n.value.trim().length<2};
+ const los=async()=>{
+  b.disabled=true;b.textContent="Speichere …";
+  try{
+   const d=await rpc("schueler_login",{p_code:konto.code,p_nickname:n.value.trim()});
+   if(!d.ok||!d.nickname)throw 0;
+   konto.nickname=d.nickname;kontoMerken();speichern();home();
+  }catch(e){nickMaske("Das hat nicht geklappt. Nimm nur Buchstaben, Zahlen und Leerzeichen (2 bis 20 Zeichen).")}
+ };
+ b.onclick=los;
+ n.onkeydown=e=>{if(e.key==="Enter"&&!b.disabled)los()};
+}
+async function abmelden(){
+ if(!confirm("Wirklich abmelden? Dein Fortschritt bleibt gespeichert."))return;
+ try{await rpc("schueler_speichern",{p_code:konto.code,p_fortschritt:fort})}catch(e){}
+ try{localStorage.removeItem("konto");localStorage.removeItem("fort")}catch(e){}
+ konto=null;fort={};loginMaske();
+}
+async function pdfLaden(){
+ const m=document.getElementById("pdfmsg");m.textContent="";
+ try{const r=await fetch(UEBERSICHT);if(!r.ok)throw 0;
+  const a=document.createElement("a");a.href=URL.createObjectURL(await r.blob());a.download=UEBERSICHT;a.click()}
+ catch(e){m.textContent="Die Übersicht ist noch nicht hinterlegt."}
+}
+let T,ti;
+const teil=(s,k)=>(s.n&&k?"<br><br>":"")+s.pre+(s.g?(s.ant!==undefined?`<span class="gf ${s.ant===s.g.r?"ok":"no"}">${s.g.r}</span>`:`<span class="gap${T[ti]===s?" act":""}"></span>`)+(s.post||""):"");
+function erklaerung(){
+ const s=T[ti],alt=T.map((x,k)=>x.sid<=s.sid?teil(x,k):"").join(""),fertig=s.g&&s.ant!==undefined,r=fertig&&s.ant===s.g.r;
+ app.innerHTML=`<div class="top"><button class="x" id="zu">✕</button><div class="bar"><i style="width:${ti/T.length*100}%"></i></div></div>
+ <div class="info" style="font-size:18px;line-height:1.8">${alt}</div>
+ <div id="fb">${s.g&&!fertig?s.o.map((o,k)=>`<button class="opt" data-k="${k}">${o}</button>`).join(""):fertig?`<div class="fb ${r?"ok":"no"}"><b>${r?"Richtig!":"Leider falsch. Richtig ist: "+s.g.r}</b><button class="btn ${r?"":"bad"}" id="w">Weiter</button></div>`:`<button class="btn" id="w">Weiter</button>`}</div>`;
+ document.getElementById("zu").onclick=home;
+ app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{s.ant=s.o[+b.dataset.k];if(s.ant===s.g.r)richtig++;erklaerung()});
+ const w=document.getElementById("w");
+ if(w)w.onclick=()=>{ti++;ti<T.length?erklaerung():ergebnis()};
+}
+function start(k){K=k;L=Object.assign({},LEKTIONEN[k],{fragen:LEKTIONEN[k].gen()});i=0;richtig=0;if(L.erkl){T=L.fragen;ti=0;let c=0;T.forEach(x=>{if(x.n)c++;x.sid=c});erklaerung()}else frage()}
+function beschriftung(sx,sy){
+ let s=`<g fill="var(--mute)" font-size=".58" font-weight="700" font-family="Nunito,sans-serif">`;
+ for(let v=-5;v<=5;v++){if(!v)continue;s+=`<text x="${v}" y=".8" text-anchor="middle">${fz(v*sx)}</text><text x="-.2" y="${-v+.2}" text-anchor="end">${fz(v*sy)}</text>`}
+ return s+`<text x="-.2" y=".8" text-anchor="end">0</text><text x="6.5" y="-.5" text-anchor="end" font-size=".8" fill="var(--ink)">x</text><text x=".3" y="-5.8" font-size=".8" fill="var(--ink)">y</text></g>`;
+}
+function graph(m,b,sx=1,sy=1){
+ let s=`<svg class="g" viewBox="-6.6 -6.6 13.2 13.2"><g stroke="var(--line)" stroke-width=".05">`;
+ for(let v=-6;v<=6;v++)s+=`<line x1="${v}" y1="-6" x2="${v}" y2="6"/><line x1="-6" y1="${v}" x2="6" y2="${v}"/>`;
+ s+=`</g><g stroke="var(--mute)" stroke-width=".12"><line x1="-6" y1="0" x2="6" y2="0"/><line x1="0" y1="-6" x2="0" y2="6"/></g>`+`<g fill="var(--mute)"><polygon points="6.5,0 5.7,-.28 5.7,.28"/><polygon points="0,-6.5 -.28,-5.7 .28,-5.7"/></g>`+beschriftung(sx,sy);
+ return s+`<line x1="-6" y1="${-(m*-6*sx+b)/sy}" x2="6" y2="${-(m*6*sx+b)/sy}" stroke="var(--main)" stroke-width=".22" stroke-linecap="round"/></svg>`;
+}
+function frage(){
+ const q=L.fragen[i];gewaehlt=null;geprueft=false;
+ app.innerHTML=`<div class="top"><button class="x" id="zu">✕</button><div class="bar"><i style="width:${i/L.fragen.length*100}%"></i></div></div>
+ ${q.info?`<div class="info">${q.info}</div>`:""}<div class="q">${q.f.replace("___",'<span class="gap"></span>')}</div>${q.g?graph(...q.g):""}
+ <div style="margin-top:14px">${q.t==="mc"?q.o.map((o,k)=>`<button class="opt" data-k="${k}">${o}</button>`).join(""):`<input class="num" id="in" inputmode="text" autocapitalize="off" placeholder="Zahl oder Bruch, z. B. −6/3" autocomplete="off">`}</div>
+ <div id="fb"><button class="btn" id="ok" disabled>Prüfen</button></div>`;
+ document.getElementById("zu").onclick=home;
+ const ok=document.getElementById("ok");
+ if(q.t==="mc")app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(geprueft)return;app.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");gewaehlt=+b.dataset.k;ok.disabled=false});
+ else document.getElementById("in").oninput=e=>{gewaehlt=e.target.value;ok.disabled=!gewaehlt.trim()};
+ ok.onclick=pruefen;
+}
+function pruefen(){
+ const q=L.fragen[i];geprueft=true;
+ let r,ant;
+ if(q.t==="mc"){r=gewaehlt===q.a;ant=q.o[q.a]}
+ else{const v=zahl(gewaehlt);r=Math.abs(v-q.a)<1e-6;ant=String(q.a).replace(".",",").replace("-","−")}
+ if(r)richtig++;
+ document.getElementById("fb").innerHTML=`<div class="fb ${r?"ok":"no"}"><b>${r?"Richtig!":"Leider falsch. Richtig ist: "+ant}</b>
+ <button class="btn ${r?"":"bad"}" id="w">${i+1<L.fragen.length?"Weiter":"Fertig"}</button></div>`;
+ document.getElementById("w").onclick=()=>{i++;i<L.fragen.length?frage():ergebnis()};
+}
+function ergebnis(){
+ const s=st(L.id),anz=L.erkl?L.fragen.filter(q=>q.g).length:L.fragen.length,p=richtig/anz;let neu=false,text="Lektion abgeschlossen. Die nächste ist freigeschaltet.";
+ if(s.laeufe>0){
+  if(s.sterne<3&&p>=QUOTEN[s.sterne]){s.sterne++;neu=true;text="Neuer Stern verdient!"}
+  else text=s.sterne<3?`Für den nächsten Stern brauchst du mindestens ${Math.round(QUOTEN[s.sterne]*100)} % richtig.`:"Alle drei Sterne hast du schon."}
+ s.laeufe++;fort[L.id]=s;speichern();
+ app.innerHTML=`<div class="res"><div class="stars">${sternHtml(s.sterne)}</div><div class="big">${Math.round(p*100)} %</div>
+ <div class="sub">${richtig} von ${anz} richtig<br>${text}</div>
+ <button class="btn" id="h">Weiter</button><p><button class="x" id="n" style="font-size:16px;font-weight:800">Noch einmal üben</button></p></div>`;
+ document.getElementById("h").onclick=home;
+ document.getElementById("n").onclick=()=>start(K);
+}
+
+/* ===== Start ===== */
+if(konto&&konto.code){
+ if(konto.nickname){
+  home();
+  /* Im Hintergrund: Zugang noch gültig? Stand von anderen Geräten übernehmen. */
+  rpc("schueler_login",{p_code:konto.code}).then(d=>{
+   if(!d.ok){
+    try{localStorage.removeItem("konto");localStorage.removeItem("fort")}catch(e){}
+    konto=null;fort={};loginMaske("Dieser Zugang ist nicht mehr gültig.");return}
+   fort=zusammen(fort,d.fortschritt);speichernLokal();
+   if(document.querySelector(".path"))home();
+  }).catch(()=>{});
+ }else nickMaske();
+}else loginMaske();
+</script>
+</body>
+</html>
